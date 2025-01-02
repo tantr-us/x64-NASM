@@ -63,9 +63,9 @@
     62                                  ;   401121:	be 28 40 40 00       	mov    esi,0x404028
     63                                  ;   401126:	b2 0d                	mov    dl,0xd
     64                                  ;   401128:	0f 05                	syscall 
-    65                                  ;   40112a:	66 b8 3c 00          	mov    ax,0x3c
-    66                                  ;   40112e:	40 b7 00             	mov    dil,0x0
-    67                                  ;   401131:	0f 05                	syscall 
-    68                                  ;   401133:	66 2e 0f 1f 84 00 00 	nop    WORD PTR cs:[rax+rax*1+0x0]
-    69                                  ;   40113a:	00 00 00 
-    70                                  ;   40113d:	0f 1f 00             	nop    DWORD PTR [rax]
+    65                                  ;   40112a:	b0 3c                	mov    al,0x3c
+    66                                  ;   40112c:	40 b7 00             	mov    dil,0x0
+    67                                  ;   40112f:	0f 05                	syscall 
+    68                                  ;   401131:	66 2e 0f 1f 84 00 00 	nop    WORD PTR cs:[rax+rax*1+0x0]
+    69                                  ;   401138:	00 00 00 
+    70                                  ;   40113b:	0f 1f 44 00 00       	nop    DWORD PTR [rax+rax*1+0x0]

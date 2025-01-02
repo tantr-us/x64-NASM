@@ -1,6 +1,6 @@
 # Makefile for HelloWorld.asm
-HelloWorld: HelloWorld.o
-	gcc -o HelloWorld HelloWorld.o -no-pie
+HelloWorld.out: HelloWorld.o
+	gcc -o HelloWorld.out HelloWorld.o -no-pie
 HelloWorld.o: HelloWorld.asm
 	nasm -f elf64 -g -F dwarf HelloWorld.asm -l HelloWorld.lst
 # -f elf64 	- Specifies the output format as ELF64 (Executable and Linkable Format for 64-bit systems).
