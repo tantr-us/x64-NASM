@@ -1,0 +1,71 @@
+     1                                  ; HelloWorld.asm - Print "Hello World" to the screen.
+     2                                  ; Compile: make
+     3                                  ; Run: ./HelloWorld
+     4                                  ;;;
+     5                                  section .data
+     6 00000000 48656C6C6F2C20576F-         msg     db      "Hello, World", 10, 0
+     6 00000009 726C640A00         
+     7                                  section .bss
+     8                                  section .text
+     9                                      global main
+    10                                  main:
+    11                                  ; Original version
+    12                                      ; mov rax, 1      ; 1 = write syscall
+    13                                      ; mov rdi, 1      ; file descriptor (fd), 1 is for stdout
+    14                                      ; mov rsi, msg    ; string to display
+    15                                      ; mov rdx, 13     ; length of the string, exclude the null byte - 0x0
+    16                                      ; syscall         ; print the string to stdout 
+    17                                      ; ; exit
+    18                                      ; mov rax, 60     ; 60 = exit syscall
+    19                                      ; mov rdi, 0      ; exit code
+    20                                      ; syscall
+    21                                  
+    22                                  ; objdump from the original version, notice the 00 (NULL byte) after each instruction lines.
+    23                                  ; 0000000000401110 <main>:
+    24                                  ;   401110:	b8 01 00 00 00       	mov    eax,0x1
+    25                                  ;   401115:	bf 01 00 00 00       	mov    edi,0x1
+    26                                  ;   40111a:	48 be 28 40 40 00 00 	movabs rsi,0x404028
+    27                                  ;   401121:	00 00 00 
+    28                                  ;   401124:	ba 0d 00 00 00       	mov    edx,0xd
+    29                                  ;   401129:	0f 05                	syscall 
+    30                                  ;   40112b:	b8 3c 00 00 00       	mov    eax,0x3c
+    31                                  ;   401130:	bf 00 00 00 00       	mov    edi,0x0
+    32                                  ;   401135:	0f 05                	syscall 
+    33                                  ;   401137:	66 0f 1f 84 00 00 00 	nop    WORD PTR [rax+rax*1+0x0]
+    34                                  ;   40113e:	00 00 
+    35                                  
+    36                                  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    37                                  
+    38                                  ; Remove NULL byte version
+    39                                      ; Zero-out all the registers
+    40 00000000 4831C0                      xor rax, rax
+    41 00000003 4831FF                      xor rdi, rdi
+    42 00000006 4831F6                      xor rsi, rsi
+    43 00000009 4831D2                      xor rdx, rdx
+    44                                      ;;;
+    45 0000000C B001                        mov al, 1     ; move 0x1 into al (the lower-bit) instead of rax to reduce the null byte
+    46 0000000E 40B701                      mov dil, 1    ; file descriptor (fd), 1 is for stdout
+    47 00000011 BE[00000000]                mov esi, msg    ; string to display
+    48 00000016 B20D                        mov dl, 13     ; length of the string, exclude the null byte - 0x0
+    49 00000018 0F05                        syscall         ; print the string to stdout 
+    50                                      ; exit
+    51 0000001A B03C                        mov al, 60     ; 60 = exit syscall
+    52 0000001C 40B700                      mov dil, 0      ; exit code
+    53 0000001F 0F05                        syscall
+    54                                  
+    55                                  ; 0000000000401110 <main>:
+    56                                  ;   401110:	48 31 c0             	xor    rax,rax
+    57                                  ;   401113:	48 31 ff             	xor    rdi,rdi
+    58                                  ;   401116:	48 31 f6             	xor    rsi,rsi
+    59                                  ;   401119:	48 31 d2             	xor    rdx,rdx
+    60                                  ;   40111c:	b0 01                	mov    al,0x1
+    61                                  ;   40111e:	40 b7 01             	mov    dil,0x1
+    62                                  ;   401121:	be 28 40 40 00       	mov    esi,0x404028
+    63                                  ;   401126:	b2 0d                	mov    dl,0xd
+    64                                  ;   401128:	0f 05                	syscall 
+    65                                  ;   40112a:	66 b8 3c 00          	mov    ax,0x3c
+    66                                  ;   40112e:	40 b7 00             	mov    dil,0x0
+    67                                  ;   401131:	0f 05                	syscall 
+    68                                  ;   401133:	66 2e 0f 1f 84 00 00 	nop    WORD PTR cs:[rax+rax*1+0x0]
+    69                                  ;   40113a:	00 00 00 
+    70                                  ;   40113d:	0f 1f 00             	nop    DWORD PTR [rax]
